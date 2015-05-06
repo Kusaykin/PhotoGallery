@@ -38,7 +38,7 @@ public class PhotoGalleryFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 		new FetchItemsTask().execute();
-		//mThumbnailThread=new ThumbnailDownladoader<ImageView>();
+		mThumbnailThread=new ThumbnailDownloader<ImageView>();
 		mThumbnailThread.start();
 		mThumbnailThread.getLooper();
 		Log.i(TAG, "Background thread started");
@@ -90,4 +90,6 @@ public class PhotoGalleryFragment extends Fragment {
 			return convertView;
 		}
 	}
+
+
 }

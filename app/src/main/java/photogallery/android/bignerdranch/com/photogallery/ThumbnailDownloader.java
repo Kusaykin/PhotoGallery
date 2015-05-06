@@ -4,7 +4,7 @@ import android.os.HandlerThread;
 import android.util.Log;
 
 /**
- * Created by  on 04.05.2015.
+ * Created by _ on 04.05.2015.
  */
 public class ThumbnailDownloader<Token> extends HandlerThread {
 	private static final  String TAG = "ThumbnailDownloader";
