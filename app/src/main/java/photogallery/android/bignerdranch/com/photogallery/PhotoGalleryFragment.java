@@ -1,8 +1,9 @@
 package photogallery.android.bignerdranch.com.photogallery;
 
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -38,8 +38,24 @@ public class PhotoGalleryFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 		new FetchItemsTask().execute();
-		mThumbnailThread=new ThumbnailDownloader<ImageView>();
-		mThumbnailThread.start();
+		mThumbnailThread = new ThumbnailDownloader(new Handler());
+
+		mThumbnailThread.setListener(new ThumbnailDownloader.Listner<ImageView>(){
+			@Override
+			public void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail) {
+				if (isVisible()) {
+					imageView.setImageBitmap(thumbnail);
+				}
+			}
+		});
+				//public void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail) {
+				//	if (isVisible()) {
+				//		imageView.setImageBitmap(thumbnail);
+				//	}
+				//}
+				//});
+
+				mThumbnailThread.start();
 		mThumbnailThread.getLooper();
 		Log.i(TAG, "Background thread started");
 	}
@@ -85,11 +101,15 @@ public class PhotoGalleryFragment extends Fragment {
 			ImageView imageView = (ImageView) convertView.findViewById((R.id.gallery_item_imageView));
 			imageView.setImageResource(R.drawable.cat_low);
 			GalleryItem item=getItem(position);
-			mThumbnailThread.queueThombnail(imageView, item.getUrl());
+			mThumbnailThread.queueThumbnail(imageView, item.getUrl());
 
 			return convertView;
 		}
 	}
 
-
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		mThumbnailThread.clearQueue();
+	}
 }
