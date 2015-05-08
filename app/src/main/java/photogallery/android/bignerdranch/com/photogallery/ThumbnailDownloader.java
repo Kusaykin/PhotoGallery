@@ -76,8 +76,8 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 				public void run() {
 					if (requestMap.get(token) != url)
 						return;
-					//requestMap.remove(token);
-					//mListener.onThumbnailDownloaded(token, bitmap);
+					requestMap.remove(token);
+					mListener.onThumbnailDownloaded(token, bitmap);
 				}
 			});
 		} catch (IOException ioe) {
